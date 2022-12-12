@@ -1,14 +1,16 @@
 #include <assert.h>
+#include <stdbool.h>
 
 #include "../include/log.h"
 
-static log_t *log;
-
 int
 main () {
-  log_open("test", 0, &log);
+  int e;
+
+  e = log_open("test", 0);
+  assert(e == 0);
 
   log_fatal("this is a fatal log");
 
-  log_close(log);
+  assert(false); // Should exit before this
 }

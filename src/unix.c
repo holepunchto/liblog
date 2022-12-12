@@ -13,7 +13,7 @@ struct log_s {
 static log_t *log;
 
 int
-log_open (const char *name, int flags, log_t **result) {
+log_open (const char *name, int flags) {
   if (log != NULL) return -1;
 
   log = malloc(sizeof(log_t));
@@ -22,13 +22,13 @@ log_open (const char *name, int flags, log_t **result) {
 
   openlog(name, 0, LOG_USER);
 
-  *result = log;
-
   return 0;
 }
 
 int
-log_close (log_t *log) {
+log_close () {
+  if (log == NULL) return -1;
+
   closelog();
 
   free(log->name);
@@ -76,6 +76,8 @@ log_verror (const char *message, va_list args) {
 int
 log_vfatal (const char *message, va_list args) {
   log_verror(message, args); // Discard error
+
+  if (log != NULL) log_close(log);
 
   exit(1);
 }

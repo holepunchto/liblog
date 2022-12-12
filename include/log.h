@@ -10,10 +10,10 @@ extern "C" {
 typedef struct log_s log_t;
 
 int
-log_open (const char *name, int flags, log_t **result);
+log_open (const char *name, int flags);
 
 int
-log_close (log_t *log);
+log_close ();
 
 int
 log_vdebug (const char *message, va_list args);

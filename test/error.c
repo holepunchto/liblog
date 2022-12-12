@@ -2,13 +2,16 @@
 
 #include "../include/log.h"
 
-static log_t *log;
-
 int
 main () {
-  log_open("test", 0, &log);
+  int e;
 
-  log_error("this is an error log");
+  e = log_open("test", 0);
+  assert(e == 0);
 
-  log_close(log);
+  e = log_error("this is an error log");
+  assert(e == 0);
+
+  e = log_close();
+  assert(e == 0);
 }
