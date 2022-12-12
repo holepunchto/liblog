@@ -8,6 +8,10 @@ endif()
 
 project(log C)
 
+if(APPLE)
+  enable_language(OBJC)
+endif()
+
 add_library(log OBJECT)
 
 set_target_properties(
@@ -25,15 +29,19 @@ target_sources(
     src/shared.c
 )
 
-if(UNIX)
+if(APPLE)
   target_sources(
     log
     PRIVATE
-      src/unix.c
+      src/mac.m
   )
-endif()
-
-if(WIN32)
+elseif(UNIX)
+  target_sources(
+    log
+    PRIVATE
+      src/linux.c
+  )
+elseif(WIN32)
   target_sources(
     log
     PRIVATE
@@ -55,6 +63,14 @@ set_target_properties(
   OUTPUT_NAME log
 )
 
+if(APPLE)
+  target_link_libraries(
+    log_shared
+    PUBLIC
+      "-framework Foundation"
+  )
+endif()
+
 add_library(log_static STATIC $<TARGET_OBJECTS:log>)
 
 set_target_properties(
@@ -62,6 +78,15 @@ set_target_properties(
   PROPERTIES
   OUTPUT_NAME log
 )
+
+if(APPLE)
+  target_link_libraries(
+    log_static
+    PUBLIC
+      "-framework Foundation"
+  )
+endif()
+
 install(TARGETS log_shared log_static)
 
 install(FILES include/log.h DESTINATION include)

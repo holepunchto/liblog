@@ -75,9 +75,11 @@ log_verror (const char *message, va_list args) {
 
 int
 log_vfatal (const char *message, va_list args) {
-  log_verror(message, args); // Discard error
+  if (log != NULL) {
+    vsyslog(LOG_EMERG, message, args);
 
-  if (log != NULL) log_close();
+    log_close();
+  }
 
   exit(1);
 }

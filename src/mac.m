@@ -1,21 +1,15 @@
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600 // Windows Vista
-#endif
+#import <stdarg.h>
+#import <stdlib.h>
+#import <string.h>
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
+#import <os/log.h>
 
-#include <TraceLoggingProvider.h>
-
-#include "../include/log.h"
-
-TRACELOGGING_DEFINE_PROVIDER(provider, "liblog", (0xe51b91fb, 0xbf54, 0x53ca, 0xbc, 0x02, 0xd0, 0x22, 0x07, 0x26, 0x97, 0x72));
+#import "../include/log.h"
 
 struct log_s {
   char *name;
   int flags;
+  os_log_t log;
 };
 
 static log_t *log;
@@ -27,8 +21,7 @@ log_open (const char *name, int flags) {
   log = malloc(sizeof(log_t));
   log->name = strdup(name);
   log->flags = flags;
-
-  TraceLoggingRegister(provider);
+  log->log = os_log_create(name, "");
 
   return 0;
 }
@@ -37,7 +30,7 @@ int
 log_close () {
   if (log == NULL) return -1;
 
-  TraceLoggingUnregister(provider);
+  [log->log release];
 
   free(log->name);
   free(log);
@@ -68,15 +61,7 @@ log_vdebug (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Debug",
-    TraceLoggingLevel(5),
-    TraceLoggingString(log->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
-
-  free(formatted);
+  os_log_debug(log->log, "%{public}s", formatted);
 
   return 0;
 }
@@ -91,15 +76,7 @@ log_vinfo (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Information",
-    TraceLoggingLevel(4),
-    TraceLoggingString(log->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
-
-  free(formatted);
+  os_log_info(log->log, "%{public}s", formatted);
 
   return 0;
 }
@@ -114,15 +91,7 @@ log_vwarn (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Warning",
-    TraceLoggingLevel(3),
-    TraceLoggingString(log->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
-
-  free(formatted);
+  os_log(log->log, "%{public}s", formatted);
 
   return 0;
 }
@@ -137,15 +106,7 @@ log_verror (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Error",
-    TraceLoggingLevel(2),
-    TraceLoggingString(log->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
-
-  free(formatted);
+  os_log_error(log->log, "%{public}s", formatted);
 
   return 0;
 }
@@ -160,15 +121,7 @@ log_vfatal (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) goto close;
 
-  TraceLoggingWrite(
-    provider,
-    "Critical",
-    TraceLoggingLevel(1),
-    TraceLoggingString(log->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
-
-  free(formatted);
+  os_log_fault(log->log, "%{public}s", formatted);
 
 close:
   log_close();
