@@ -154,7 +154,7 @@ int
 log_vfatal (const char *message, va_list args) {
   log_verror(message, args); // Discard error
 
-  if (log != NULL) log_close(log);
+  if (log != NULL) log_close();
 
   exit(1);
 }
