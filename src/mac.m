@@ -55,6 +55,8 @@ int
 log_vdebug (const char *message, va_list args) {
   if (log == NULL) return -1;
 
+  if (!os_log_debug_enabled(log->log)) return 0;
+
   char *formatted;
   size_t size;
 
@@ -69,6 +71,8 @@ log_vdebug (const char *message, va_list args) {
 int
 log_vinfo (const char *message, va_list args) {
   if (log == NULL) return -1;
+
+  if (!os_log_info_enabled(log->log)) return 0;
 
   char *formatted;
   size_t size;
