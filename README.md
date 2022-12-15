@@ -1,6 +1,6 @@
 ## liblog
 
-A simple logging library with a unified interface to [os_log](https://developer.apple.com/documentation/os/logging?language=objc), [syslog](https://www.man7.org/linux/man-pages/man3/syslog.3.html), and [TraceLogging](https://learn.microsoft.com/en-us/windows/win32/tracelogging/).
+Simple logging library with a unified interface to [os_log](https://developer.apple.com/documentation/os/logging?language=objc), [syslog](https://www.man7.org/linux/man-pages/man3/syslog.3.html), and [TraceLogging](https://learn.microsoft.com/en-us/windows/win32/tracelogging/).
 
 ## Usage
 
