@@ -43,7 +43,7 @@ The [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devt
 
 ## API
 
-See [`includes/log.h`](include/log.h) for the public API.
+See [`include/log.h`](include/log.h) for the public API.
 
 ## License
 
