@@ -1,11 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-if(WIN32)
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-endif()
-
 project(log C)
 
 if(APPLE)
@@ -18,7 +12,7 @@ set_target_properties(
   log
   PROPERTIES
   C_STANDARD 99
-  POSITION_INDEPENDENT_CODE 1
+  POSITION_INDEPENDENT_CODE ON
 )
 
 target_sources(
@@ -61,6 +55,7 @@ set_target_properties(
   log_shared
   PROPERTIES
   OUTPUT_NAME log
+  WINDOWS_EXPORT_ALL_SYMBOLS ON
 )
 
 if(APPLE)
