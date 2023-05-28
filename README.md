@@ -47,4 +47,4 @@ See [`include/log.h`](include/log.h) for the public API.
 
 ## License
 
-ISC
+Apache 2.0
