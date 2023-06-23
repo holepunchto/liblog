@@ -23,7 +23,11 @@ log_debug (const char *message, ...) {
   va_list args;
   va_start(args, message);
 
-  return log_vdebug(message, args);
+  int err = log_vdebug(message, args);
+
+  va_end(args);
+
+  return err;
 }
 
 int
@@ -34,7 +38,11 @@ log_info (const char *message, ...) {
   va_list args;
   va_start(args, message);
 
-  return log_vinfo(message, args);
+  int err = log_vinfo(message, args);
+
+  va_end(args);
+
+  return err;
 }
 
 int
@@ -45,7 +53,11 @@ log_warn (const char *message, ...) {
   va_list args;
   va_start(args, message);
 
-  return log_vwarn(message, args);
+  int err = log_vwarn(message, args);
+
+  va_end(args);
+
+  return err;
 }
 
 int
@@ -56,7 +68,11 @@ log_error (const char *message, ...) {
   va_list args;
   va_start(args, message);
 
-  return log_verror(message, args);
+  int err = log_verror(message, args);
+
+  va_end(args);
+
+  return err;
 }
 
 int
@@ -67,7 +83,11 @@ log_fatal (const char *message, ...) {
   va_list args;
   va_start(args, message);
 
-  return log_vfatal(message, args);
+  int err = log_vfatal(message, args);
+
+  va_end(args);
+
+  return err;
 }
 
 #ifdef __cplusplus
