@@ -18,15 +18,15 @@ struct log_s {
   int flags;
 };
 
-static log_t *log;
+static log_t *log_;
 
 int
 log_open (const char *name, int flags) {
-  if (log != NULL) return -1;
+  if (log_ != NULL) return -1;
 
-  log = malloc(sizeof(log_t));
-  log->name = strdup(name);
-  log->flags = flags;
+  log_ = malloc(sizeof(log_t));
+  log_->name = strdup(name);
+  log_->flags = flags;
 
   TraceLoggingRegister(provider);
 
@@ -35,12 +35,12 @@ log_open (const char *name, int flags) {
 
 int
 log_close () {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   TraceLoggingUnregister(provider);
 
-  free(log->name);
-  free(log);
+  free(log_->name);
+  free(log_);
 
   return 0;
 }
@@ -70,7 +70,7 @@ log_vformat (char **result, size_t *size, const char *message, va_list args) {
 
 int
 log_vdebug (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
@@ -82,7 +82,7 @@ log_vdebug (const char *message, va_list args) {
     provider,
     "Debug",
     TraceLoggingLevel(5),
-    TraceLoggingString(log->name, "log"),
+    TraceLoggingString(log_->name, "log"),
     TraceLoggingString(formatted, "message")
   );
 
@@ -93,7 +93,7 @@ log_vdebug (const char *message, va_list args) {
 
 int
 log_vinfo (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
@@ -105,7 +105,7 @@ log_vinfo (const char *message, va_list args) {
     provider,
     "Information",
     TraceLoggingLevel(4),
-    TraceLoggingString(log->name, "log"),
+    TraceLoggingString(log_->name, "log"),
     TraceLoggingString(formatted, "message")
   );
 
@@ -116,7 +116,7 @@ log_vinfo (const char *message, va_list args) {
 
 int
 log_vwarn (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
@@ -128,7 +128,7 @@ log_vwarn (const char *message, va_list args) {
     provider,
     "Warning",
     TraceLoggingLevel(3),
-    TraceLoggingString(log->name, "log"),
+    TraceLoggingString(log_->name, "log"),
     TraceLoggingString(formatted, "message")
   );
 
@@ -139,7 +139,7 @@ log_vwarn (const char *message, va_list args) {
 
 int
 log_verror (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
@@ -151,7 +151,7 @@ log_verror (const char *message, va_list args) {
     provider,
     "Error",
     TraceLoggingLevel(2),
-    TraceLoggingString(log->name, "log"),
+    TraceLoggingString(log_->name, "log"),
     TraceLoggingString(formatted, "message")
   );
 
@@ -162,7 +162,7 @@ log_verror (const char *message, va_list args) {
 
 int
 log_vfatal (const char *message, va_list args) {
-  if (log == NULL) goto done;
+  if (log_ == NULL) goto done;
 
   char *formatted;
   size_t size;
@@ -174,7 +174,7 @@ log_vfatal (const char *message, va_list args) {
     provider,
     "Critical",
     TraceLoggingLevel(1),
-    TraceLoggingString(log->name, "log"),
+    TraceLoggingString(log_->name, "log"),
     TraceLoggingString(formatted, "message")
   );
 

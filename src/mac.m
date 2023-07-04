@@ -12,28 +12,28 @@ struct log_s {
   os_log_t log;
 };
 
-static log_t *log;
+static log_t *log_;
 
 int
 log_open (const char *name, int flags) {
-  if (log != NULL) return -1;
+  if (log_ != NULL) return -1;
 
-  log = malloc(sizeof(log_t));
-  log->name = strdup(name);
-  log->flags = flags;
-  log->log = os_log_create(name, "");
+  log_ = malloc(sizeof(log_t));
+  log_->name = strdup(name);
+  log_->flags = flags;
+  log_->log = os_log_create(name, "");
 
   return 0;
 }
 
 int
 log_close () {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
-  [log->log release];
+  [log_->log release];
 
-  free(log->name);
-  free(log);
+  free(log_->name);
+  free(log_);
 
   return 0;
 }
@@ -63,9 +63,9 @@ log_vformat (char **result, size_t *size, const char *message, va_list args) {
 
 int
 log_vdebug (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
-  if (!os_log_debug_enabled(log->log)) return 0;
+  if (!os_log_debug_enabled(log_->log)) return 0;
 
   char *formatted;
   size_t size;
@@ -73,16 +73,16 @@ log_vdebug (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  os_log_debug(log->log, "%{public}s", formatted);
+  os_log_debug(log_->log, "%{public}s", formatted);
 
   return 0;
 }
 
 int
 log_vinfo (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
-  if (!os_log_info_enabled(log->log)) return 0;
+  if (!os_log_info_enabled(log_->log)) return 0;
 
   char *formatted;
   size_t size;
@@ -90,14 +90,14 @@ log_vinfo (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  os_log_info(log->log, "%{public}s", formatted);
+  os_log_info(log_->log, "%{public}s", formatted);
 
   return 0;
 }
 
 int
 log_vwarn (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
@@ -105,14 +105,14 @@ log_vwarn (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  os_log(log->log, "%{public}s", formatted);
+  os_log(log_->log, "%{public}s", formatted);
 
   return 0;
 }
 
 int
 log_verror (const char *message, va_list args) {
-  if (log == NULL) return -1;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
@@ -120,14 +120,14 @@ log_verror (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  os_log_error(log->log, "%{public}s", formatted);
+  os_log_error(log_->log, "%{public}s", formatted);
 
   return 0;
 }
 
 int
 log_vfatal (const char *message, va_list args) {
-  if (log == NULL) goto done;
+  if (log_ == NULL) goto done;
 
   char *formatted;
   size_t size;
@@ -135,7 +135,7 @@ log_vfatal (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) goto close;
 
-  os_log_fault(log->log, "%{public}s", formatted);
+  os_log_fault(log_->log, "%{public}s", formatted);
 
 close:
   log_close();
