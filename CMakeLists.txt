@@ -49,13 +49,19 @@ target_include_directories(
     include
 )
 
-add_library(log_shared SHARED $<TARGET_OBJECTS:log>)
+add_library(log_shared SHARED)
 
 set_target_properties(
   log_shared
   PROPERTIES
   OUTPUT_NAME log
   WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
+
+target_link_libraries(
+  log_shared
+  PUBLIC
+    log
 )
 
 if(APPLE)
@@ -66,12 +72,18 @@ if(APPLE)
   )
 endif()
 
-add_library(log_static STATIC $<TARGET_OBJECTS:log>)
+add_library(log_static STATIC)
 
 set_target_properties(
   log_static
   PROPERTIES
   OUTPUT_NAME log
+)
+
+target_link_libraries(
+  log_static
+  PUBLIC
+    log
 )
 
 if(APPLE)
