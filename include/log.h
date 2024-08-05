@@ -7,8 +7,6 @@ extern "C" {
 
 #include <stdarg.h>
 
-typedef struct log_s log_t;
-
 int
 log_open (const char *name, int flags);
 

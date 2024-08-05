@@ -10,15 +10,21 @@
 
 using namespace tld;
 
+typedef struct log_s log_t;
+
 struct log_s {
   Provider provider;
 
   log_s(const char *name) : provider(name) {}
 };
 
+namespace {
+
 static log_t *log_;
 
-int
+}
+
+extern "C" int
 log_open (const char *name, int flags) {
   if (log_ != NULL) return -1;
 
@@ -27,7 +33,7 @@ log_open (const char *name, int flags) {
   return 0;
 }
 
-int
+extern "C" int
 log_close () {
   if (log_ == NULL) return -1;
 
@@ -36,7 +42,9 @@ log_close () {
   return 0;
 }
 
-int
+namespace {
+
+static inline int
 log_vformat (char **result, size_t *size, const char *message, va_list args) {
   va_list args_copy;
   va_copy(args_copy, args);
@@ -59,7 +67,9 @@ log_vformat (char **result, size_t *size, const char *message, va_list args) {
   return 0;
 }
 
-int
+} // namespace
+
+extern "C" int
 log_vdebug (const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
@@ -81,7 +91,7 @@ log_vdebug (const char *message, va_list args) {
   return 0;
 }
 
-int
+extern "C" int
 log_vinfo (const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
@@ -103,7 +113,7 @@ log_vinfo (const char *message, va_list args) {
   return 0;
 }
 
-int
+extern "C" int
 log_vwarn (const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
@@ -125,7 +135,7 @@ log_vwarn (const char *message, va_list args) {
   return 0;
 }
 
-int
+extern "C" int
 log_verror (const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
@@ -147,15 +157,15 @@ log_verror (const char *message, va_list args) {
   return 0;
 }
 
-int
+extern "C" int
 log_vfatal (const char *message, va_list args) {
-  if (log_ == NULL) exit(1);
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
 
   int err = log_vformat(&formatted, &size, message, args);
-  if (err < 0) exit(1);
+  if (err < 0) return err;
 
   Event<std::vector<BYTE>> event("Critical", 1);
 

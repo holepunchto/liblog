@@ -5,10 +5,9 @@
 
 #include "../include/log.h"
 
-struct log_s {
-  char *name;
-  int flags;
-};
+typedef struct log_s log_t;
+
+struct log_s {};
 
 static log_t *log_;
 
@@ -17,8 +16,6 @@ log_open (const char *name, int flags) {
   if (log_ != NULL) return -1;
 
   log_ = malloc(sizeof(log_t));
-  log_->name = strdup(name);
-  log_->flags = flags;
 
   openlog(name, 0, LOG_USER);
 
@@ -31,7 +28,6 @@ log_close () {
 
   closelog();
 
-  free(log_->name);
   free(log_);
 
   return 0;
@@ -75,11 +71,9 @@ log_verror (const char *message, va_list args) {
 
 int
 log_vfatal (const char *message, va_list args) {
-  if (log_ != NULL) {
-    vsyslog(LOG_EMERG, message, args);
+  if (log_ == NULL) return -1;
 
-    log_close();
-  }
+  vsyslog(LOG_EMERG, message, args);
 
   exit(1);
 }

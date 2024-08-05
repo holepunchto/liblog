@@ -6,9 +6,9 @@
 
 #import "../include/log.h"
 
+typedef struct log_s log_t;
+
 struct log_s {
-  char *name;
-  int flags;
   os_log_t log;
 };
 
@@ -19,8 +19,6 @@ log_open (const char *name, int flags) {
   if (log_ != NULL) return -1;
 
   log_ = malloc(sizeof(log_t));
-  log_->name = strdup(name);
-  log_->flags = flags;
   log_->log = os_log_create(name, "");
 
   return 0;
@@ -30,15 +28,14 @@ int
 log_close () {
   if (log_ == NULL) return -1;
 
-  [log_->log release];
+  os_release(log_->log);
 
-  free(log_->name);
   free(log_);
 
   return 0;
 }
 
-int
+static inline int
 log_vformat (char **result, size_t *size, const char *message, va_list args) {
   va_list args_copy;
   va_copy(args_copy, args);
@@ -127,19 +124,15 @@ log_verror (const char *message, va_list args) {
 
 int
 log_vfatal (const char *message, va_list args) {
-  if (log_ == NULL) goto done;
+  if (log_ == NULL) return -1;
 
   char *formatted;
   size_t size;
 
   int err = log_vformat(&formatted, &size, message, args);
-  if (err < 0) goto close;
+  if (err < 0) return err;
 
   os_log_fault(log_->log, "%{public}s", formatted);
 
-close:
-  log_close();
-
-done:
   exit(1);
 }

@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 
 project(log C)
 
-if(APPLE)
-  enable_language(OBJC)
-elseif(WIN32)
+if(WIN32)
   enable_language(CXX)
 endif()
 
@@ -26,16 +24,10 @@ target_sources(
 )
 
 if(APPLE)
-  set_target_properties(
-    log
-    PROPERTIES
-    OBJC_STANDARD 99
-  )
-
   target_sources(
     log
     PRIVATE
-      src/darwin.m
+      src/darwin.c
   )
 elseif(UNIX)
   target_sources(
@@ -63,14 +55,6 @@ target_include_directories(
   PUBLIC
     include
 )
-
-if(APPLE)
-  target_link_libraries(
-    log
-    PUBLIC
-      "-framework Foundation"
-  )
-endif()
 
 add_library(log_shared SHARED)
 
