@@ -35,7 +35,7 @@ if(APPLE)
   target_sources(
     log
     PRIVATE
-      src/mac.m
+      src/darwin.m
   )
 elseif(UNIX)
   target_sources(
