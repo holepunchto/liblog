@@ -26,7 +26,7 @@ log stream --predicate "subsystem == '<name>'"
 
 #### Linux
 
-On Linux, [journalctl](https://www.man7.org/linux/man-pages/man1/journalctl.1.html) can be used to consume logs. To show only messages for a given log, such as `some-log` in the previous example, pass the `--identifier` flag:
+On Linux, [`journalctl`](https://www.man7.org/linux/man-pages/man1/journalctl.1.html) can be used to consume logs. To show only messages for a given log, such as `some-log` in the previous example, pass the `--identifier` flag:
 
 ```sh
 journalctl --identifier <name>
