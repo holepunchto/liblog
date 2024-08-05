@@ -6,6 +6,10 @@ list(APPEND tests
   warn
 )
 
+list(APPEND failing_tests
+  fatal
+)
+
 foreach(test IN LISTS tests)
   add_executable(${test} ${test}.c)
 
@@ -26,4 +30,12 @@ foreach(test IN LISTS tests)
     PROPERTIES
     TIMEOUT 30
   )
+
+   if(${test} IN_LIST failing_tests)
+    set_tests_properties(
+      ${test}
+      PROPERTIES
+      WILL_FAIL TRUE
+    )
+  endif()
 endforeach()
