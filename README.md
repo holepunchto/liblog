@@ -34,7 +34,23 @@ journalctl --identifier <name>
 
 #### Windows
 
-On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs.
+On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs. To start a trace on the command line using `tracelog` for a given log, such as `some-log` in the previous example, do:
+
+```pwsh
+tracelog -start my-trace -guid *some-log -f log.etl
+```
+
+When done collecting logs, stop the trace:
+
+```pwsh
+tracelog -stop my-trace
+```
+
+To summarize and view the collected logs, use [`tracefmt`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracefmt):
+
+```pwsh
+tracefmt log.etl -o log.txt
+```
 
 ## API
 
