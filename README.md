@@ -34,12 +34,7 @@ journalctl --identifier <name>
 
 #### Windows
 
-On Windows, liblog registers a TraceLogging provider with the following information: 
-
-- Name: `liblog`
-- GUID: `e51b91fb-bf54-53ca-bc02-d02207269772` (hash of `liblog`)
-
-The [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs.
+On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs.
 
 ## API
 

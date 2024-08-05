@@ -4,6 +4,8 @@ project(log C)
 
 if(APPLE)
   enable_language(OBJC)
+elseif(WIN32)
+  enable_language(CXX)
 endif()
 
 add_library(log OBJECT)
@@ -24,6 +26,12 @@ target_sources(
 )
 
 if(APPLE)
+  set_target_properties(
+    log
+    PROPERTIES
+    OBJC_STANDARD 99
+  )
+
   target_sources(
     log
     PRIVATE
@@ -36,10 +44,17 @@ elseif(UNIX)
       src/linux.c
   )
 elseif(WIN32)
+  set_target_properties(
+    log
+    PROPERTIES
+    CXX_STANDARD 20
+  )
+
   target_sources(
     log
     PRIVATE
-      src/win.c
+      src/win32.cc
+      src/win32/TraceLoggingDynamic.h
   )
 endif()
 

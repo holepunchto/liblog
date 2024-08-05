@@ -1,21 +1,19 @@
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600 // Windows Vista
-#endif
+#include <vector>
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
-
-#include <TraceLoggingProvider.h>
 
 #include "../include/log.h"
 
-TRACELOGGING_DEFINE_PROVIDER(provider, "liblog", (0xe51b91fb, 0xbf54, 0x53ca, 0xbc, 0x02, 0xd0, 0x22, 0x07, 0x26, 0x97, 0x72));
+#include "win32/TraceLoggingDynamic.h"
+
+using namespace tld;
 
 struct log_s {
-  char *name;
-  int flags;
+  Provider provider;
+
+  log_s(const char *name) : provider(name) {}
 };
 
 static log_t *log_;
@@ -24,11 +22,7 @@ int
 log_open (const char *name, int flags) {
   if (log_ != NULL) return -1;
 
-  log_ = malloc(sizeof(log_t));
-  log_->name = strdup(name);
-  log_->flags = flags;
-
-  TraceLoggingRegister(provider);
+  log_ = new log_t(name);
 
   return 0;
 }
@@ -37,10 +31,7 @@ int
 log_close () {
   if (log_ == NULL) return -1;
 
-  TraceLoggingUnregister(provider);
-
-  free(log_->name);
-  free(log_);
+  delete log_;
 
   return 0;
 }
@@ -57,7 +48,7 @@ log_vformat (char **result, size_t *size, const char *message, va_list args) {
   if (res < 0) return res;
 
   *size = res + 1 /* NULL */;
-  *result = malloc(*size);
+  *result = new char[*size]();
 
   va_copy(args_copy, args);
 
@@ -78,15 +69,14 @@ log_vdebug (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Debug",
-    TraceLoggingLevel(5),
-    TraceLoggingString(log_->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
+  Event<std::vector<BYTE>> event("Debug", 5);
 
-  free(formatted);
+  event.AddField("message", Type::TypeUtf8String);
+  event.AddString(formatted);
+
+  event.Write(log_->provider);
+
+  delete[] formatted;
 
   return 0;
 }
@@ -101,15 +91,14 @@ log_vinfo (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Information",
-    TraceLoggingLevel(4),
-    TraceLoggingString(log_->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
+  Event<std::vector<BYTE>> event("Information", 4);
 
-  free(formatted);
+  event.AddField("message", Type::TypeUtf8String);
+  event.AddString(formatted);
+
+  event.Write(log_->provider);
+
+  delete[] formatted;
 
   return 0;
 }
@@ -124,15 +113,14 @@ log_vwarn (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Warning",
-    TraceLoggingLevel(3),
-    TraceLoggingString(log_->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
+  Event<std::vector<BYTE>> event("Warning", 3);
 
-  free(formatted);
+  event.AddField("message", Type::TypeUtf8String);
+  event.AddString(formatted);
+
+  event.Write(log_->provider);
+
+  delete[] formatted;
 
   return 0;
 }
@@ -147,42 +135,36 @@ log_verror (const char *message, va_list args) {
   int err = log_vformat(&formatted, &size, message, args);
   if (err < 0) return err;
 
-  TraceLoggingWrite(
-    provider,
-    "Error",
-    TraceLoggingLevel(2),
-    TraceLoggingString(log_->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
+  Event<std::vector<BYTE>> event("Error", 2);
 
-  free(formatted);
+  event.AddField("message", Type::TypeUtf8String);
+  event.AddString(formatted);
+
+  event.Write(log_->provider);
+
+  delete[] formatted;
 
   return 0;
 }
 
 int
 log_vfatal (const char *message, va_list args) {
-  if (log_ == NULL) goto done;
+  if (log_ == NULL) exit(1);
 
   char *formatted;
   size_t size;
 
   int err = log_vformat(&formatted, &size, message, args);
-  if (err < 0) goto close;
+  if (err < 0) exit(1);
 
-  TraceLoggingWrite(
-    provider,
-    "Critical",
-    TraceLoggingLevel(1),
-    TraceLoggingString(log_->name, "log"),
-    TraceLoggingString(formatted, "message")
-  );
+  Event<std::vector<BYTE>> event("Critical", 1);
 
-  free(formatted);
+  event.AddField("message", Type::TypeUtf8String);
+  event.AddString(formatted);
 
-close:
-  log_close();
+  event.Write(log_->provider);
 
-done:
+  delete[] formatted;
+
   exit(1);
 }
