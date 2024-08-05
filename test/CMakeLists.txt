@@ -16,7 +16,7 @@ foreach(test IN LISTS tests)
   target_link_libraries(
     ${test}
     PRIVATE
-      log_static
+      log
   )
 
   add_test(

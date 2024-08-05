@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.25)
 
 project(log C)
 
@@ -49,6 +49,14 @@ target_include_directories(
     include
 )
 
+if(APPLE)
+  target_link_libraries(
+    log
+    PUBLIC
+      "-framework Foundation"
+  )
+endif()
+
 add_library(log_shared SHARED)
 
 set_target_properties(
@@ -64,14 +72,6 @@ target_link_libraries(
     log
 )
 
-if(APPLE)
-  target_link_libraries(
-    log_shared
-    PUBLIC
-      "-framework Foundation"
-  )
-endif()
-
 add_library(log_static STATIC)
 
 set_target_properties(
@@ -86,19 +86,12 @@ target_link_libraries(
     log
 )
 
-if(APPLE)
-  target_link_libraries(
-    log_static
-    PUBLIC
-      "-framework Foundation"
-  )
-endif()
-
 install(TARGETS log_shared log_static)
 
 install(FILES include/log.h DESTINATION include)
 
 if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
+
   add_subdirectory(test)
 endif()
