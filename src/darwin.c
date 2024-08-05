@@ -1,10 +1,10 @@
-#import <stdarg.h>
-#import <stdlib.h>
-#import <string.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
 
-#import <os/log.h>
+#include <os/log.h>
 
-#import "../include/log.h"
+#include "../include/log.h"
 
 typedef struct log_s log_t;
 
