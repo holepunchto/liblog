@@ -72,6 +72,8 @@ log_vdebug (const char *message, va_list args) {
 
   os_log_debug(log_->log, "%{public}s", formatted);
 
+  free(formatted);
+
   return 0;
 }
 
@@ -89,6 +91,8 @@ log_vinfo (const char *message, va_list args) {
 
   os_log_info(log_->log, "%{public}s", formatted);
 
+  free(formatted);
+
   return 0;
 }
 
@@ -103,6 +107,8 @@ log_vwarn (const char *message, va_list args) {
   if (err < 0) return err;
 
   os_log(log_->log, "%{public}s", formatted);
+
+  free(formatted);
 
   return 0;
 }
@@ -119,6 +125,8 @@ log_verror (const char *message, va_list args) {
 
   os_log_error(log_->log, "%{public}s", formatted);
 
+  free(formatted);
+
   return 0;
 }
 
@@ -133,6 +141,8 @@ log_vfatal (const char *message, va_list args) {
   if (err < 0) return err;
 
   os_log_fault(log_->log, "%{public}s", formatted);
+
+  free(formatted);
 
   exit(1);
 }
