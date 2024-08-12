@@ -30,10 +30,12 @@ if(ANDROID)
       src/android.c
   )
 
+  find_library(log log)
+
   target_link_libraries(
     log
-    PRIVATE
-      -llog
+    PUBLIC
+      ${log}
   )
 elseif(APPLE)
   target_sources(
