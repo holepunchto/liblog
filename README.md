@@ -1,6 +1,6 @@
 ## liblog
 
-Simple logging library with a unified interface to [os_log](https://developer.apple.com/documentation/os/logging?language=objc), [syslog](https://www.man7.org/linux/man-pages/man3/syslog.3.html), and [TraceLogging](https://learn.microsoft.com/en-us/windows/win32/tracelogging/).
+Simple logging library with a unified interface to [os_log](https://developer.apple.com/documentation/os/logging?language=objc), [syslog](https://www.man7.org/linux/man-pages/man3/syslog.3.html), [Logcat](https://developer.android.com/tools/logcat), and [TraceLogging](https://learn.microsoft.com/en-us/windows/win32/tracelogging/).
 
 ## Usage
 
@@ -31,6 +31,16 @@ On Linux, [`journalctl`](https://www.man7.org/linux/man-pages/man1/journalctl.1.
 ```sh
 journalctl --identifier <name>
 ```
+
+#### Android
+
+On Android, [`logcat`](https://developer.android.com/tools/logcat) can be used to consume logs. To show only messages for a given log, such as `some-log` in the previous example, pass a filterspec:
+
+```sh
+adb logcat "*:S some-log:*"
+```
+
+This will silence all logs by default (`*:S`) and show only those with a name of `some-log` for all priorities (`:*`).
 
 #### Windows
 
