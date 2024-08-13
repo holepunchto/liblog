@@ -23,7 +23,21 @@ target_sources(
     src/shared.c
 )
 
-if(APPLE)
+if(ANDROID)
+  target_sources(
+    log
+    PRIVATE
+      src/android.c
+  )
+
+  find_library(log log)
+
+  target_link_libraries(
+    log
+    PUBLIC
+      ${log}
+  )
+elseif(APPLE)
   target_sources(
     log
     PRIVATE
