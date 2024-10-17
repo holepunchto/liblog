@@ -91,6 +91,7 @@ set_target_properties(
   log_static
   PROPERTIES
   OUTPUT_NAME log
+  PREFIX lib
 )
 
 target_link_libraries(
