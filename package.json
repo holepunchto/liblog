@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "liblog",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/liblog.git"
+  },
+  "author": "Holepunch",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/holepunchto/liblog/issues"
+  },
+  "homepage": "https://github.com/holepunchto/liblog#readme"
+}
