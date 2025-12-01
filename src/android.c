@@ -15,7 +15,7 @@ struct log_s {
 static log_t *log_;
 
 int
-log_open (const char *name, int flags) {
+log_open(const char *name, int flags) {
   if (log_ != NULL) return -1;
 
   log_ = malloc(sizeof(log_t));
@@ -25,7 +25,7 @@ log_open (const char *name, int flags) {
 }
 
 int
-log_close () {
+log_close() {
   if (log_ == NULL) return -1;
 
   free(log_->name);
@@ -35,7 +35,7 @@ log_close () {
 }
 
 int
-log_vdebug (const char *message, va_list args) {
+log_vdebug(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   int err = __android_log_vprint(ANDROID_LOG_DEBUG, log_->name, message, args);
@@ -44,7 +44,7 @@ log_vdebug (const char *message, va_list args) {
 }
 
 int
-log_vinfo (const char *message, va_list args) {
+log_vinfo(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   int err = __android_log_vprint(ANDROID_LOG_INFO, log_->name, message, args);
@@ -53,7 +53,7 @@ log_vinfo (const char *message, va_list args) {
 }
 
 int
-log_vwarn (const char *message, va_list args) {
+log_vwarn(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   int err = __android_log_vprint(ANDROID_LOG_WARN, log_->name, message, args);
@@ -62,7 +62,7 @@ log_vwarn (const char *message, va_list args) {
 }
 
 int
-log_verror (const char *message, va_list args) {
+log_verror(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   int err = __android_log_vprint(ANDROID_LOG_ERROR, log_->name, message, args);
@@ -71,7 +71,7 @@ log_verror (const char *message, va_list args) {
 }
 
 int
-log_vfatal (const char *message, va_list args) {
+log_vfatal(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   __android_log_vprint(ANDROID_LOG_FATAL, log_->name, message, args);

@@ -3,7 +3,7 @@
 #include "../include/log.h"
 
 int
-main () {
+main() {
   int e;
 
   e = log_open("test", 0);

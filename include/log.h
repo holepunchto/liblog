@@ -8,16 +8,16 @@ extern "C" {
 #include <stdarg.h>
 
 int
-log_open (const char *name, int flags);
+log_open(const char *name, int flags);
 
 int
-log_close ();
+log_close();
 
 int
-log_vdebug (const char *message, va_list args);
+log_vdebug(const char *message, va_list args);
 
 inline int
-log_debug (const char *message, ...) {
+log_debug(const char *message, ...) {
   va_list args;
   va_start(args, message);
 
@@ -29,10 +29,10 @@ log_debug (const char *message, ...) {
 }
 
 int
-log_vinfo (const char *message, va_list args);
+log_vinfo(const char *message, va_list args);
 
 inline int
-log_info (const char *message, ...) {
+log_info(const char *message, ...) {
   va_list args;
   va_start(args, message);
 
@@ -44,10 +44,10 @@ log_info (const char *message, ...) {
 }
 
 int
-log_vwarn (const char *message, va_list args);
+log_vwarn(const char *message, va_list args);
 
 inline int
-log_warn (const char *message, ...) {
+log_warn(const char *message, ...) {
   va_list args;
   va_start(args, message);
 
@@ -59,10 +59,10 @@ log_warn (const char *message, ...) {
 }
 
 int
-log_verror (const char *message, va_list args);
+log_verror(const char *message, va_list args);
 
 inline int
-log_error (const char *message, ...) {
+log_error(const char *message, ...) {
   va_list args;
   va_start(args, message);
 
@@ -74,10 +74,10 @@ log_error (const char *message, ...) {
 }
 
 int
-log_vfatal (const char *message, va_list args);
+log_vfatal(const char *message, va_list args);
 
 inline int
-log_fatal (const char *message, ...) {
+log_fatal(const char *message, ...) {
   va_list args;
   va_start(args, message);
 

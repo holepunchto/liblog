@@ -25,7 +25,7 @@ static log_t *log_;
 }
 
 extern "C" int
-log_open (const char *name, int flags) {
+log_open(const char *name, int flags) {
   if (log_ != NULL) return -1;
 
   log_ = new log_t(name);
@@ -34,7 +34,7 @@ log_open (const char *name, int flags) {
 }
 
 extern "C" int
-log_close () {
+log_close() {
   if (log_ == NULL) return -1;
 
   delete log_;
@@ -45,7 +45,7 @@ log_close () {
 namespace {
 
 static inline int
-log_vformat (char **result, size_t *size, const char *message, va_list args) {
+log_vformat(char **result, size_t *size, const char *message, va_list args) {
   va_list args_copy;
   va_copy(args_copy, args);
 
@@ -70,7 +70,7 @@ log_vformat (char **result, size_t *size, const char *message, va_list args) {
 } // namespace
 
 extern "C" int
-log_vdebug (const char *message, va_list args) {
+log_vdebug(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   char *formatted;
@@ -92,7 +92,7 @@ log_vdebug (const char *message, va_list args) {
 }
 
 extern "C" int
-log_vinfo (const char *message, va_list args) {
+log_vinfo(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   char *formatted;
@@ -114,7 +114,7 @@ log_vinfo (const char *message, va_list args) {
 }
 
 extern "C" int
-log_vwarn (const char *message, va_list args) {
+log_vwarn(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   char *formatted;
@@ -136,7 +136,7 @@ log_vwarn (const char *message, va_list args) {
 }
 
 extern "C" int
-log_verror (const char *message, va_list args) {
+log_verror(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   char *formatted;
@@ -158,7 +158,7 @@ log_verror (const char *message, va_list args) {
 }
 
 extern "C" int
-log_vfatal (const char *message, va_list args) {
+log_vfatal(const char *message, va_list args) {
   if (log_ == NULL) return -1;
 
   char *formatted;
