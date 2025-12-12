@@ -10,39 +10,9 @@
 
 using namespace tld;
 
-typedef struct log_s log_t;
-
-struct log_s {
-  Provider provider;
-
-  log_s(const char *name) : provider(name) {}
-};
-
 namespace {
 
-static log_t *log_;
-
-}
-
-extern "C" int
-log_open(const char *name, int flags) {
-  if (log_ != NULL) return -1;
-
-  log_ = new log_t(name);
-
-  return 0;
-}
-
-extern "C" int
-log_close() {
-  if (log_ == NULL) return -1;
-
-  delete log_;
-
-  return 0;
-}
-
-namespace {
+static Provider log_provider;
 
 static inline int
 log_vformat(char **result, size_t *size, const char *message, va_list args) {
@@ -71,8 +41,6 @@ log_vformat(char **result, size_t *size, const char *message, va_list args) {
 
 extern "C" int
 log_vdebug(const char *message, va_list args) {
-  if (log_ == NULL) return -1;
-
   char *formatted;
   size_t size;
 
@@ -84,7 +52,7 @@ log_vdebug(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_->provider);
+  event.Write(log_provider);
 
   delete[] formatted;
 
@@ -93,8 +61,6 @@ log_vdebug(const char *message, va_list args) {
 
 extern "C" int
 log_vinfo(const char *message, va_list args) {
-  if (log_ == NULL) return -1;
-
   char *formatted;
   size_t size;
 
@@ -106,7 +72,7 @@ log_vinfo(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_->provider);
+  event.Write(log_provider);
 
   delete[] formatted;
 
@@ -115,8 +81,6 @@ log_vinfo(const char *message, va_list args) {
 
 extern "C" int
 log_vwarn(const char *message, va_list args) {
-  if (log_ == NULL) return -1;
-
   char *formatted;
   size_t size;
 
@@ -128,7 +92,7 @@ log_vwarn(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_->provider);
+  event.Write(log_provider);
 
   delete[] formatted;
 
@@ -150,7 +114,7 @@ log_verror(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_->provider);
+  event.Write(log_provider);
 
   delete[] formatted;
 
@@ -159,8 +123,6 @@ log_verror(const char *message, va_list args) {
 
 extern "C" int
 log_vfatal(const char *message, va_list args) {
-  if (log_ == NULL) return -1;
-
   char *formatted;
   size_t size;
 
@@ -172,7 +134,7 @@ log_vfatal(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_->provider);
+  event.Write(log_provider);
 
   delete[] formatted;
 

@@ -7,11 +7,7 @@ Simple logging library with a unified interface to [os_log](https://developer.ap
 ```c
 #include <log.h>
 
-log_open("some-log", 0); 
-
 log_debug("Current pid: %u", getpid());
-
-log_close();
 ```
 
 ### Consuming logs

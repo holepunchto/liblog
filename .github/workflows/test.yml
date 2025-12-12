@@ -11,36 +11,36 @@ jobs:
     strategy:
       matrix:
         include:
-        - os: ubuntu-latest
-          platform: linux
-          arch: x64
-        - os: ubuntu-latest
-          platform: android
-          arch: x64
-        - os: ubuntu-latest
-          platform: android
-          arch: ia32
-        - os: ubuntu-latest
-          platform: android
-          arch: arm64
-        - os: ubuntu-latest
-          platform: android
-          arch: arm
-        - os: macos-latest
-          platform: darwin
-          arch: arm64
-        - os: windows-latest
-          platform: win32
-          arch: x64
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+          - os: ubuntu-latest
+            platform: android
+            arch: x64
+          - os: ubuntu-latest
+            platform: android
+            arch: ia32
+          - os: ubuntu-latest
+            platform: android
+            arch: arm64
+          - os: ubuntu-latest
+            platform: android
+            arch: arm
+          - os: macos-latest
+            platform: darwin
+            arch: arm64
+          - os: windows-latest
+            platform: win32
+            arch: x64
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.platform }}-${{ matrix.arch }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - run: npm install -g bare-make
-    - run: bare-make generate --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --debug ${{ matrix.flags }}
-    - run: bare-make build
-    - run: bare-make test
-      if: ${{ matrix.platform == 'linux' || matrix.platform == 'darwin' || matrix.platform == 'win32' }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - run: npm install -g bare-make
+      - run: bare-make generate --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --debug ${{ matrix.flags }}
+      - run: bare-make build
+      - run: bare-make test
+        if: ${{ matrix.platform == 'linux' || matrix.platform == 'darwin' || matrix.platform == 'win32' }}
