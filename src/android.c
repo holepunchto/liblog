@@ -1,6 +1,6 @@
-#import <stdarg.h>
-#import <stdlib.h>
-#import <string.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <android/log.h>
 
