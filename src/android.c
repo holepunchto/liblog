@@ -1,6 +1,5 @@
 #include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <android/log.h>
 
