@@ -40,10 +40,10 @@ This will silence all logs by default (`*:S`) and show only those with a name of
 
 #### Windows
 
-On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs. To start a trace on the command line using `tracelog` for a given binary, such as `my-app`, do:
+On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs. To start a trace on the command line using `tracelog` for a given binary, such as `my-app.exe`, do:
 
 ```pwsh
-tracelog -start my-trace -guid *my-app -f log.etl
+tracelog -start my-trace -guid *my-app.exe -f log.etl
 ```
 
 When done collecting logs, stop the trace:
