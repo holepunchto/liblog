@@ -1,3 +1,4 @@
+#include <string>
 #include <vector>
 
 #include <stddef.h>
@@ -12,7 +13,33 @@ using namespace tld;
 
 namespace {
 
-static Provider log_provider;
+struct log_provider_t {
+  log_provider_t() : provider_(name().c_str()) {}
+
+  operator const Provider &() {
+    return provider_;
+  }
+
+  static std::wstring
+  name() {
+    wchar_t exe[MAX_PATH];
+
+    GetModuleFileNameW(nullptr, exe, MAX_PATH);
+
+    auto name = exe;
+
+    for (auto p = exe; *p; ++p) {
+      if (*p == L'\\' || *p == L'/') name = p + 1;
+    }
+
+    return name;
+  }
+
+private:
+  Provider provider_;
+};
+
+thread_local static log_provider_t log_provider;
 
 static inline int
 log_vformat(char **result, size_t *size, const char *message, va_list args) {
@@ -101,8 +128,6 @@ log_vwarn(const char *message, va_list args) {
 
 extern "C" int
 log_verror(const char *message, va_list args) {
-  if (log_ == NULL) return -1;
-
   char *formatted;
   size_t size;
 
