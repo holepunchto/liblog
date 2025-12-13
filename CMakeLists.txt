@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 4.0)
 
 project(log C)
 
@@ -41,7 +41,7 @@ elseif(APPLE)
   target_sources(
     log
     PRIVATE
-      src/darwin.c
+      src/apple.c
   )
 elseif(UNIX)
   target_sources(

@@ -8,12 +8,6 @@ extern "C" {
 #include <stdarg.h>
 
 int
-log_open(const char *name, int flags);
-
-int
-log_close();
-
-int
 log_vdebug(const char *message, va_list args);
 
 inline int

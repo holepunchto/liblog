@@ -7,47 +7,43 @@ Simple logging library with a unified interface to [os_log](https://developer.ap
 ```c
 #include <log.h>
 
-log_open("some-log", 0); 
-
 log_debug("Current pid: %u", getpid());
-
-log_close();
 ```
 
 ### Consuming logs
 
 #### macOS
 
-On macOS, [Console.app](https://support.apple.com/en-gb/guide/console/welcome/mac) and the `log` tool can be used to consume logs. To show only message for a given log, such as `some-log` in the previous example, pass the `--predicate` flag:
+On macOS, [Console.app](https://support.apple.com/en-gb/guide/console/welcome/mac) and the `log` tool can be used to consume logs. To show only messages for a given binary, such as `my-app`, pass the `--predicate` flag:
 
 ```sh
-log stream --predicate "subsystem == '<name>'"
+log stream --predicate "process == 'my-app'"
 ```
 
 #### Linux
 
-On Linux, [`journalctl`](https://www.man7.org/linux/man-pages/man1/journalctl.1.html) can be used to consume logs. To show only messages for a given log, such as `some-log` in the previous example, pass the `--identifier` flag:
+On Linux, [`journalctl`](https://www.man7.org/linux/man-pages/man1/journalctl.1.html) can be used to consume logs. To show only messages for a given binary, such as `my-app`, pass the `--identifier` flag:
 
 ```sh
-journalctl --identifier <name>
+journalctl --identifier my-app
 ```
 
 #### Android
 
-On Android, [`logcat`](https://developer.android.com/tools/logcat) can be used to consume logs. To show only messages for a given log, such as `some-log` in the previous example, pass a filterspec:
+On Android, [`logcat`](https://developer.android.com/tools/logcat) can be used to consume logs. To show only messages for a given binary, such as `my-app`, pass a filterspec:
 
 ```sh
-adb logcat "*:S some-log:*"
+adb logcat "*:S my-app:*"
 ```
 
 This will silence all logs by default (`*:S`) and show only those with a name of `some-log` for all priorities (`:*`).
 
 #### Windows
 
-On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs. To start a trace on the command line using `tracelog` for a given log, such as `some-log` in the previous example, do:
+On Windows, the [`tracelog`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelog) and [`traceview`](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview) tools from the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) can be used to consume logs. To start a trace on the command line using `tracelog` for a given binary, such as `my-app.exe`, do:
 
 ```pwsh
-tracelog -start my-trace -guid *some-log -f log.etl
+tracelog -start my-trace -guid *my-app.exe -f log.etl
 ```
 
 When done collecting logs, stop the trace:
