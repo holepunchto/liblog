@@ -11,7 +11,7 @@ log_vformat(char **result, size_t *size, const char *message, va_list args) {
   va_list args_copy;
   va_copy(args_copy, args);
 
-  int res = vsnprintf(NULL, 0, message, args);
+  int res = vsnprintf(NULL, 0, message, args_copy);
 
   va_end(args_copy);
 
@@ -22,7 +22,7 @@ log_vformat(char **result, size_t *size, const char *message, va_list args) {
 
   va_copy(args_copy, args);
 
-  vsnprintf(*result, *size, message, args);
+  vsnprintf(*result, *size, message, args_copy);
 
   va_end(args_copy);
 
