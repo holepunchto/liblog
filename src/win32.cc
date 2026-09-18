@@ -1,4 +1,3 @@
-#include <string>
 #include <vector>
 
 #include <stddef.h>
@@ -13,15 +12,11 @@ using namespace tld;
 
 namespace {
 
-struct log_provider_t {
-  log_provider_t() : provider_(name().c_str()) {}
-
-  operator const Provider &() {
-    return provider_;
-  }
-
-  static std::wstring
-  name() {
+// ETW registration is process wide and `EventWrite()` is thread safe, so one
+// provider serves every thread. It is created on first use and never destroyed.
+static const Provider &
+log_provider() {
+  static const Provider *provider = [] {
     wchar_t exe[MAX_PATH];
 
     GetModuleFileNameW(nullptr, exe, MAX_PATH);
@@ -32,14 +27,11 @@ struct log_provider_t {
       if (*p == L'\\' || *p == L'/') name = p + 1;
     }
 
-    return name;
-  }
+    return new Provider(name);
+  }();
 
-private:
-  Provider provider_;
-};
-
-thread_local static log_provider_t log_provider;
+  return *provider;
+}
 
 static inline int
 log_vformat(char **result, size_t *size, const char *message, va_list args) {
@@ -79,7 +71,7 @@ log_vdebug(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_provider);
+  event.Write(log_provider());
 
   delete[] formatted;
 
@@ -99,7 +91,7 @@ log_vinfo(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_provider);
+  event.Write(log_provider());
 
   delete[] formatted;
 
@@ -119,7 +111,7 @@ log_vwarn(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_provider);
+  event.Write(log_provider());
 
   delete[] formatted;
 
@@ -139,7 +131,7 @@ log_verror(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_provider);
+  event.Write(log_provider());
 
   delete[] formatted;
 
@@ -159,7 +151,7 @@ log_vfatal(const char *message, va_list args) {
   event.AddField("message", Type::TypeUtf8String);
   event.AddString(formatted);
 
-  event.Write(log_provider);
+  event.Write(log_provider());
 
   delete[] formatted;
 
