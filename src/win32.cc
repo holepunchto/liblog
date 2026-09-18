@@ -13,10 +13,7 @@ using namespace tld;
 namespace {
 
 // ETW registration is process wide and `EventWrite()` is thread safe, so one
-// provider serves every thread. It is created on first use and never destroyed:
-// a dynamic initializer would run on each thread as it starts, including the
-// loader threads Windows creates while the process exits, and destroying it at
-// exit would leave later logs writing through a dead registration.
+// provider serves every thread. It is created on first use and never destroyed.
 static const Provider &
 log_provider() {
   static const Provider *provider = [] {
