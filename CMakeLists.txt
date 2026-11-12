@@ -6,13 +6,15 @@ if(WIN32)
   enable_language(CXX)
 endif()
 
+get_property(shared GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
+
 add_library(log OBJECT)
 
 set_target_properties(
   log
   PROPERTIES
   C_STANDARD 99
-  POSITION_INDEPENDENT_CODE ON
+  POSITION_INDEPENDENT_CODE ${shared}
 )
 
 target_sources(
@@ -43,6 +45,12 @@ elseif(APPLE)
     PRIVATE
       src/apple.c
   )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "FreeRTOS")
+  target_sources(
+    log
+    PRIVATE
+      src/freertos.c
+  )
 elseif(UNIX)
   target_sources(
     log
@@ -70,20 +78,22 @@ target_include_directories(
     include
 )
 
-add_library(log_shared SHARED)
+if(shared)
+  add_library(log_shared SHARED)
 
-set_target_properties(
-  log_shared
-  PROPERTIES
-  OUTPUT_NAME log
-  WINDOWS_EXPORT_ALL_SYMBOLS ON
-)
+  set_target_properties(
+    log_shared
+    PROPERTIES
+    OUTPUT_NAME log
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+  )
 
-target_link_libraries(
-  log_shared
-  PUBLIC
-    log
-)
+  target_link_libraries(
+    log_shared
+    PUBLIC
+      log
+  )
+endif()
 
 add_library(log_static STATIC)
 
@@ -100,7 +110,11 @@ target_link_libraries(
     log
 )
 
-install(TARGETS log_shared log_static)
+install(TARGETS log_static)
+
+if(shared)
+  install(TARGETS log_shared)
+endif()
 
 install(FILES include/log.h DESTINATION include)
 
