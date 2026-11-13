@@ -1,0 +1,52 @@
+name: Integrate
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+          - os: ubuntu-latest
+            platform: android
+            arch: x64
+          - os: ubuntu-latest
+            platform: freertos
+            arch: riscv32
+            flags: -D FREERTOS_QEMU=ON
+          - os: ubuntu-latest
+            platform: freertos
+            arch: armv8m
+            flags: -D FREERTOS_QEMU=ON
+          - os: macos-latest
+            platform: darwin
+            arch: arm64
+          - os: macos-latest
+            platform: ios
+            arch: arm64
+          - os: windows-latest
+            platform: win32
+            arch: x64
+    runs-on: ${{ matrix.os }}
+    name: Test / ${{ matrix.platform }}-${{ matrix.arch }}
+    steps:
+      - uses: holepunchto/actions/bare-base@v1
+      - uses: holepunchto/actions/setup-qemu@v1
+        if: ${{ matrix.platform == 'freertos' }}
+      - uses: holepunchto/actions/compile-prebuilds@v1
+        with:
+          platform: ${{ matrix.platform }}
+          arch: ${{ matrix.arch }}
+          flags: --debug ${{ matrix.flags }}
+          picolibc: ${{ matrix.platform == 'freertos' }}
+      - run: bare-make test
+        if: ${{ matrix.platform != 'android' && matrix.platform != 'ios' }}
