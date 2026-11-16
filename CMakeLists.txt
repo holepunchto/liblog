@@ -1,28 +1,31 @@
 cmake_minimum_required(VERSION 4.0)
 
-project(log C)
+find_package(cmake-prelude REQUIRED PATHS node_modules/cmake-prelude)
+find_package(cmake-test REQUIRED PATHS node_modules/cmake-test)
+
+project(log LANGUAGES C VERSION 0.0.0)
 
 if(WIN32)
   enable_language(CXX)
 endif()
 
-get_property(shared GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
+# Android ships a system library named liblog.so, which a shared library of
+# ours would clash with.
+if(ANDROID)
+  set(shared OFF)
+else()
+  set(shared ON)
+endif()
 
-add_library(log OBJECT)
-
-set_target_properties(
+add_library_targets(
   log
-  PROPERTIES
-  C_STANDARD 99
-  POSITION_INDEPENDENT_CODE ${shared}
-)
-
-target_sources(
-  log
-  INTERFACE
+  HEADERS
     include/log.h
-  PRIVATE
+  FEATURES
+    c_std_99
+  SOURCES
     src/shared.c
+  SHARED ${shared}
 )
 
 if(ANDROID)
@@ -32,12 +35,10 @@ if(ANDROID)
       src/android.c
   )
 
-  find_library(log log)
-
   target_link_libraries(
-    log
-    PUBLIC
-      ${log}
+    log_headers
+    INTERFACE
+      -llog
   )
 elseif(APPLE)
   target_sources(
@@ -58,68 +59,18 @@ elseif(UNIX)
       src/linux.c
   )
 elseif(WIN32)
-  set_target_properties(
-    log
-    PROPERTIES
-    CXX_STANDARD 20
-  )
-
   target_sources(
     log
     PRIVATE
       src/win32.cc
       src/win32/TraceLoggingDynamic.h
   )
-endif()
 
-target_include_directories(
-  log
-  PUBLIC
-    include
-)
-
-if(shared)
-  add_library(log_shared SHARED)
-
-  set_target_properties(
-    log_shared
-    PROPERTIES
-    OUTPUT_NAME log
-    WINDOWS_EXPORT_ALL_SYMBOLS ON
-  )
-
-  target_link_libraries(
-    log_shared
-    PUBLIC
-      log
-  )
-endif()
-
-add_library(log_static STATIC)
-
-set_target_properties(
-  log_static
-  PROPERTIES
-  OUTPUT_NAME log
-  PREFIX lib
-)
-
-target_link_libraries(
-  log_static
-  PUBLIC
+  target_compile_features(
     log
-)
-
-install(TARGETS log_static)
-
-if(shared)
-  install(TARGETS log_shared)
+    PRIVATE
+      cxx_std_20
+  )
 endif()
 
-install(FILES include/log.h DESTINATION include)
-
-if(PROJECT_IS_TOP_LEVEL)
-  enable_testing()
-
-  add_subdirectory(test)
-endif()
+add_test_subdirectory(test)

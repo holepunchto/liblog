@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#include "../include/log.h"
+#include <log.h>
 
 int
 main() {
