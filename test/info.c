@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include "../include/log.h"
+#include <log.h>
 
 int
 main() {
