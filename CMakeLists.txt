@@ -12,20 +12,21 @@ endif()
 # Android ships a system library named liblog.so, which a shared library of
 # ours would clash with.
 if(ANDROID)
-  set(shared OFF)
+  set(types STATIC)
 else()
-  set(shared ON)
+  set(types STATIC SHARED)
 endif()
 
 add_library_targets(
   log
+  TYPE
+    ${types}
   HEADERS
     include/log.h
   FEATURES
     c_std_99
   SOURCES
     src/shared.c
-  SHARED ${shared}
 )
 
 if(ANDROID)
