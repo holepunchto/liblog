@@ -1,23 +1,17 @@
-if(TARGET log_shared)
-  set(library log::shared)
-else()
-  set(library log::static)
-endif()
-
 add_test_executables(
   debug.c
   error.c
   info.c
   warn.c
   LINK
-    ${library}
+    log::<TYPE>
 )
 
 add_test_executable(
   fatal
   fatal.c
   LINK
-    ${library}
+    log::<TYPE>
   PROPERTIES
     WILL_FAIL TRUE
 )
